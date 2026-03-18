@@ -2,6 +2,7 @@ import gleam/http/request
 import gleam/httpc
 import gleam/io
 import gleam/string
+import gleam/uri
 import gleam/list
 import gleam/int
 import gleam/json
@@ -131,8 +132,9 @@ fn file_decoder(identifier: String) -> decode.Decoder(List(Track)) {
     }
   case format {
     "VBR MP3" -> {
-      let url = "https://archive.org/download/" <> identifier <> "/" <> name
-      decode.success([Track(title: title, artist: artist, album: album, url: url,),])
+      let encoded_name = uri.percent_encode(name)
+      let url = "https://archive.org/download/" <> identifier <> "/" <> encoded_name
+      decode.success([Track(title: title, artist: artist, album: album, url: url)])
     }
     _ ->
       decode.success([])
